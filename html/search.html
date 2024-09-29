@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>home</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="css/style.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="lyear-layout-web">
+        <div class="lyear-layout-container">
+            <ul class="nav" style="display: flex;justify-content: center;padding: 20px;">
+                <li> <a href="home.html">home</a> </li>
+                <li> <a href="fundraiser.html">details</a> </li>
+                <li> <a href="search.html">search</a> </li>
+            </ul>
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-header" id="button1">
+                                <form action="#!" method="post" class="row" style="display: flex;">
+                                    <div class="form-group col-md-8">
+                                        <label for="FUNDRAISER_ID">FUNDRAISER_ID</label>
+                                        <input type="text" class="form-control" id="FUNDRAISER_ID" name="FUNDRAISER_ID"
+                                            value="" />
+                                    </div>
+                                    <div class="form-group col-md-8">
+                                        <label for="CITY">CITY</label>
+                                        <input type="text" class="form-control" id="CITY" name="CITY" value="" />
+                                    </div>
+                                    <div class="form-group col-md-8">
+                                        <label for="CATEGORY_ID">CATEGORY_ID</label>
+                                        <div class="form-controls">
+                                            <select name="CATEGORY_ID" class="form-control" id="CATEGORY_ID">
+                                            </select>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div style="display: flex;justify-content: center;">
+                                <button type="button" id="button2" style="margin: 30px;">query</button>
+                                <button type="button" id="button3" style="margin: 30px;">Clear</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <!-- <div class="card-header" id="button1">
+                                    <h4>表格</h4>
+                                </div> -->
+                            <div class="card-body">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>FUNDRAISER_ID</th>
+                                            <th>ORGANIZER</th>
+                                            <th>CAPTION</th>
+                                            <th>TARGET_FUNDING</th>
+                                            <th>CURRENT_FUNDING</th>
+                                            <th>CITY</th>
+                                            <th>ACTIVE</th>
+                                            <th>CATEGORY_ID</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tbody">
+                                        <!-- tbody -->
+                                    </tbody>
+                                </table>
+                                <div style="font-weight: bold;color: #f00;text-align: center;" id="note">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            console.log('init');
+            $.ajax({
+                url: "http://localhost:9002/api/getCategoriesList",
+                type: "get",
+                success: function (data) {
+                    console.log(data);
+                    if (data.length) {
+                        let tbodyinnerHTML = ''
+                        data.map((item) => {
+                            tbodyinnerHTML += `<option value=${item.CATEGORY_ID}>${item.NAME}</option>`
+                        })
+                        document.getElementById("CATEGORY_ID").innerHTML = tbodyinnerHTML;
+                    }
+                }
+            });
+        });
+        $("#button2").on('click', function () {
+            let FUNDRAISER_ID = $('#FUNDRAISER_ID').val()
+            let CITY = $('#CITY').val()
+            let CATEGORY_ID = $('#CATEGORY_ID').val()
+            if (!FUNDRAISER_ID && !CITY && !CATEGORY_ID) {
+                alert('must select at least one criteria !')
+                return
+            }
+            $.ajax({
+                url: `http://localhost:9002/api/getFundraisersListByType?FUNDRAISER_ID=${FUNDRAISER_ID}&CITY=${CITY}&CATEGORY_ID=${CATEGORY_ID}`,
+                // data: {name: 'jenny'},
+                type: "get",
+                //dataType: "json",
+                success: function (data) {
+                    console.log(data);
+                    let tbodyinnerHTML = ''
+                    if (data.length) {
+                        data.map((item) => {
+                            tbodyinnerHTML += `<tr>
+                                <th><a href="fundraiser.html?${item.FUNDRAISER_ID}">${item.FUNDRAISER_ID}</a></th>
+                                <th>${item.ORGANIZER}</th>
+                                <th>${item.CAPTION}</th>
+                                <th>${item.TARGET_FUNDING}</th>
+                                <th>${item.CURRENT_FUNDING}</th>
+                                <th>${item.CITY}</th>
+                                <th>${item.ACTIVE}</th>
+                                <th>${item.CATEGORY_ID}</th>
+                            </tr>`
+                        })
+                        document.getElementById("tbody").innerHTML = tbodyinnerHTML;
+                        document.getElementById("note").innerHTML = '';
+                    } else {
+                        document.getElementById("tbody").innerHTML = '';
+                        document.getElementById("note").innerHTML = 'no data !!';
+                    }
+                }
+            });
+        });
+        $("#button3").on('click', function () {
+            $('#FUNDRAISER_ID').val('')
+            $('#CITY').val('')
+            $('#CATEGORY_ID').val('')
+        });
+
+    </script>
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="js/perfect-scrollbar.min.js"></script>
+    <script type="text/javascript" src="js/main.min.js"></script>
+</body>
+
+</html>
