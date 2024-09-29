@@ -18,7 +18,7 @@ let user = require('./api.js');
 app.use(user);
 
 module.exports = app
-const port = 9001
+const port = 9002
 app.listen(port, () => {
 	console.log(`app is running at http://localhost:${port}`)
 })
