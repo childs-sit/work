@@ -5,8 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>home</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/materialdesignicons.min.css" rel="stylesheet">
     <link href="css/style.min.css" rel="stylesheet">
 </head>
 
@@ -14,18 +12,15 @@
     <div class="lyear-layout-web">
         <div class="lyear-layout-container">
             
-                <ul class="nav" style="display: flex;justify-content: center;padding: 20px;">
-                    <li> <a href="home.html">home</a> </li>
-                    <li> <a href="fundraiser.html">details</a> </li>
-                    <li> <a href="search.html">search</a> </li>
-                </ul>
-          
+            <ul class="nav" style="display: flex;justify-content: center;padding: 20px;">
+                <li style="margin-left: 50px;"> <a href="home.html">home</a> </li>
+                <li style="margin-left: 50px;"> <a href="fundraiser.html">details</a> </li>
+                <li style="margin-left: 50px;"> <a href="search.html">search</a> </li>
+            </ul>
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="card">
-                            <div class="card-header" id="button1">
-                            </div>
                             <div class="card-body">
                                 <table class="table">
                                     <thead>
@@ -50,21 +45,28 @@
                 </div>
 
             </div>
-
-            <!-- </main> -->
         </div>
     </div>
-
-    <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
+        function ajax(obj) {
+            let type = obj.type;
+            let url = obj.url;
+            let callback = obj.callback;
+            let xhr = new XMLHttpRequest();
+            xhr.open(type, url);
+            xhr.send();
+            xhr.onreadystatechange = function () {
+                callback(JSON.parse(xhr.responseText));
+            }
+        }
+    </script>
+    <script type="text/javascript">
+        function init () {
             console.log('init');
-            $.ajax({
+            ajax({
                 url: "http://localhost:9002/api/getFundraisersListActive?active=Active",
-                // data: {name: 'jenny'},
                 type: "get",
-                //dataType: "json",
-                success: function (data) {
+                callback: function (data) {
                     console.log(data);
                     if (data.length) {
                         let tbodyinnerHTML = ''
@@ -84,12 +86,9 @@
                     }
                 }
             });
-        });
-
+        };
+        init()
     </script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/perfect-scrollbar.min.js"></script>
-    <script type="text/javascript" src="js/main.min.js"></script>
 </body>
 
 </html>

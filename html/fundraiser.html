@@ -4,83 +4,94 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <title>home</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/materialdesignicons.min.css" rel="stylesheet">
+    <title>details</title>
     <link href="css/style.min.css" rel="stylesheet">
+    <style>
+        .form-group{
+            margin-left: 50px;
+        }
+    </style>
 </head>
 
 <body>
     <div class="lyear-layout-web">
         <div class="lyear-layout-container">
             <ul class="nav" style="display: flex;justify-content: center;padding: 20px;">
-                <li> <a href="home.html">home</a> </li>
-                <li> <a href="fundraiser.html">details</a> </li>
-                <li> <a href="search.html">search</a> </li>
+                <li style="margin-left: 50px;"> <a href="home.html">home</a> </li>
+                <li style="margin-left: 50px;"> <a href="fundraiser.html">details</a> </li>
+                <li style="margin-left: 50px;"> <a href="search.html">search</a> </li>
             </ul>
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-lg-12">
-                        <div class="card">
-                            <div class="card-header" id="button1">
-                                <div class="form-group col-md-3">
-                                    <label>FUNDRAISER_ID:</label>
-                                    <span id="FUNDRAISER_ID"></span>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label>ORGANIZER:</label>
-                                    <span id="ORGANIZER"></span>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label>CAPTION:</label>
-                                    <span id="CAPTION"></span>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label>TARGET_FUNDING:</label>
-                                    <span id="TARGET_FUNDING"></span>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label>CURRENT_FUNDING:</label>
-                                    <span id="CURRENT_FUNDING"></span>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label>CITY:</label>
-                                    <span id="CITY"></span>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label>ACTIVE:</label>
-                                    <span id="ACTIVE"></span>
-                                </div>
-                                <div class="form-group col-md-3">
-                                    <label>CATEGORY_ID:</label>
-                                    <span id="CATEGORY_ID"></span>
-                                </div>
-                               
-                            </div>
-                            <div style="display: flex;justify-content: center;">
-                                <button type="button" id="Donate" class=""
-                                    style="margin: 30px;">Donate</button>
-                            </div>
+                    <div style="text-align: center;">
+                        <img id="imgurl" src="" alt="" style="width: 400px;height: 300px;">
+                    </div>
+                    <div class="card-header" style="display: flex;flex-wrap: wrap;color: #fff;" id="button1">
+                        <div class="form-group col-md-3">
+                            <label>FUNDRAISER_ID:</label>
+                            <span id="FUNDRAISER_ID"></span>
                         </div>
+                        <div class="form-group col-md-3">
+                            <label>ORGANIZER:</label>
+                            <span id="ORGANIZER"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>CAPTION:</label>
+                            <span id="CAPTION"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>TARGET_FUNDING:</label>
+                            <span id="TARGET_FUNDING"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>CURRENT_FUNDING:</label>
+                            <span id="CURRENT_FUNDING"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>CITY:</label>
+                            <span id="CITY"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>ACTIVE:</label>
+                            <span id="ACTIVE"></span>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <label>CATEGORY_ID:</label>
+                            <span id="CATEGORY_ID"></span>
+                        </div>
+                    </div>
+                    <div style="display: flex;justify-content: center;">
+                        <button type="button" id="Donate" class="" style="margin: 30px;">Donate</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <script type="text/javascript" src="js/jquery.min.js"></script>
     <script type="text/javascript">
-        $(document).ready(function () {
+        function ajax(obj) {
+            let type = obj.type;
+            let url = obj.url;
+            let callback = obj.callback;
+            let xhr = new XMLHttpRequest();
+            xhr.open(type, url);
+            xhr.send();
+            xhr.onreadystatechange = function () {
+                callback(JSON.parse(xhr.responseText));
+            }
+        }
+    </script>
+    <script type="text/javascript">
+        function init () {
             console.log(location.search);
             let param = location.search ? location.search.split('?') : ''
             if (!param) {
                 return;
             }
             console.log('init');
-            $.ajax({
+            ajax({
                 url: `http://localhost:9002/api/getFundraisersListByFUNDRAISERID?FUNDRAISER_ID=${param[1]}`,
                 type: "get",
-                success: function (data) {
+                callback: function (data) {
                     console.log(data);
                     if (data.length) {
                         document.getElementById("FUNDRAISER_ID").innerHTML = data[0].FUNDRAISER_ID;
@@ -91,17 +102,16 @@
                         document.getElementById("CITY").innerHTML = data[0].CITY;
                         document.getElementById("ACTIVE").innerHTML = data[0].ACTIVE;
                         document.getElementById("CATEGORY_ID").innerHTML = data[0].CATEGORY_ID;
+                        document.getElementById("imgurl").src = './images/' + data[0].FUNDRAISER_ID + '.jpg';
                     }
                 }
             });
-        });
-        $("#Donate").on('click', function () {
+        };
+        init()
+        document.getElementById("Donate").onclick = function () {
             alert('This feature is under contruction')
-        });
+        };
     </script>
-    <script type="text/javascript" src="js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="js/perfect-scrollbar.min.js"></script>
-    <script type="text/javascript" src="js/main.min.js"></script>
 </body>
 
 </html>
