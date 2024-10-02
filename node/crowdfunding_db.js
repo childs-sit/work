@@ -4,9 +4,9 @@ class DBPool {
 		this.config = {
 			host: 'localhost', 
 			port: 3306, 
-			user: 'root', //连接数据库的用户名
-			password: 'zzr13470327878', //连接数据库的密码
-			database: 'crowdFunding', //数据库名
+			user: 'root', //Username for connecting to the database
+			password: 'zzr13470327878', //Password for connecting to the database
+			database: 'crowdFunding', //database
 			connectionLimit: 10, 
 			multipleStatements: false, 
 			waitForConnections: true, 
